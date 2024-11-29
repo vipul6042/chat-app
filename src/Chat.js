@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect,useRef} from "react";
 import { Avatar, IconButton } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { IoMdSearch } from "react-icons/io";
@@ -9,7 +9,7 @@ import "./chat.css";
 import axios from "./axios";
 
 function Chat({ messages }) {
-
+  const displaySectionRef = useRef(null);
   const [input, setInput] = useState("");
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -22,6 +22,14 @@ function Chat({ messages }) {
     });
     setInput("");
   };
+
+  useEffect(() => {
+    // Scroll to the bottom when messages are updated
+    if (displaySectionRef.current) {
+      displaySectionRef.current.scrollTop =
+        displaySectionRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   return (
     <div className="chat_secton">
@@ -43,7 +51,7 @@ function Chat({ messages }) {
           </IconButton>
         </div>
       </div>
-      <div className="display_section">
+      <div className="display_section" ref={displaySectionRef}>
         {messages.map((message) => (
           <p
             className={`chat_message ${
